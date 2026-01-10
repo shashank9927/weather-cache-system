@@ -9,7 +9,9 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "mongoose": "^9.1.2",
     "next": "16.1.1",
+    "openmeteo": "^1.2.3",
     "react": "19.2.3",
     "react-dom": "19.2.3"
   },
