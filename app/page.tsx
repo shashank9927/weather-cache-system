@@ -61,21 +61,25 @@ export default function Home() {
     };
     
     useEffect(() => {
-    const clearDatabaseOnLoad = async () => {
-        try {
-            await fetch('/api/database/clear', { method: 'DELETE' });
-            console.log('MongoDB (L2 Cache) cleared on page reload/startup.');
-            
-            if (showViewer) {
-                setL2Entries([]); 
+        const clearCachesOnLoad = async () => {
+            try {
+                await Promise.all([
+                    fetch('/api/cache/clear', { method: 'DELETE' }),
+                    fetch('/api/database/clear', { method: 'DELETE' })
+                ]);
+                
+                console.log('System Reset: L1 and L2 caches cleared on startup.');
+                
+                setL1Entries([]);
+                setL2Entries([]);
+            } catch (error) {
+                console.error('Failed to clear caches on startup:', error);
             }
-        } catch (error) {
-            console.error('Failed to clear database on startup:', error);
-        }
-    };
-
-        clearDatabaseOnLoad();
-    }, []);
+        };
+    
+        clearCachesOnLoad();
+}, []);
+    
     // Debounced search
     useEffect(() => {
         if (debounceRef.current) clearTimeout(debounceRef.current);
