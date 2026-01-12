@@ -2,6 +2,7 @@ import connectDB from './db';
 import Weather from '@/models/Weather';
 import { lruCache } from './lruCache';
 import { fetchWeatherApi } from 'openmeteo';
+import { WeatherData, WeatherCoordinates } from './types';
 
 const TTL_MS = 30 * 60 * 1000;
 
@@ -9,7 +10,7 @@ function isFresh(lastFetched: number): boolean {
     return Date.now() - lastFetched < TTL_MS;
 }
 
-async function getCoordinates(city: string): Promise<{ lat: number; lon: number }> {
+async function getCoordinates(city: string): Promise<WeatherCoordinates> {
     try {
         const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(
             city
@@ -32,7 +33,7 @@ async function getCoordinates(city: string): Promise<{ lat: number; lon: number 
     }
 }
 
-async function fetchFromSource(city: string, lat?: number, lon?: number): Promise<any> {
+async function fetchFromSource(city: string, lat?: number, lon?: number): Promise<WeatherData> {
     console.log(`Fetching from OpenMeteo API: ${city}`);
 
     let coords = { lat: lat || 0, lon: lon || 0 };
@@ -65,7 +66,7 @@ async function fetchFromSource(city: string, lat?: number, lon?: number): Promis
         const hourly = response.hourly()!;
         const daily = response.daily()!;
 
-        const weatherData = {
+        const weatherData: WeatherData = {
             city,
             coordinates: coords,
             current: {
@@ -105,7 +106,7 @@ async function fetchFromSource(city: string, lat?: number, lon?: number): Promis
     }
 }
 
-export async function getCityWeather(city: string, lat?: number, lon?: number): Promise<any> {
+export async function getCityWeather(city: string, lat?: number, lon?: number): Promise<WeatherData> {
     const normalizedCity = city.toLowerCase().trim();
     const now = Date.now();
 

@@ -1,8 +1,9 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
+import { WeatherData } from '@/lib/types';
 
 export interface IWeather extends Document {
     city: string;
-    data: any;
+    data: WeatherData;
     lastFetched: Date;
 }
 

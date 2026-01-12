@@ -1,3 +1,5 @@
+import { WeatherData } from './types';
+
 class Node<K, V> {
     key: K;
     value: V;
@@ -17,8 +19,9 @@ class DoublyLinkedList<K, V> {
     tail: Node<K, V>;
 
     constructor() {
-        this.head = new Node<K, V>(null as any, null as any);
-        this.tail = new Node<K, V>(null as any, null as any);
+        // Sentinel nodes with placeholder values
+        this.head = new Node<K, V>('' as K, {} as V, 0);
+        this.tail = new Node<K, V>('' as K, {} as V, 0);
         this.head.next = this.tail;
         this.tail.prev = this.head;
     }
@@ -142,11 +145,11 @@ export class LRUCache<K, V> {
 }
 
 declare global {
-    var _lruCacheInstance: LRUCache<string, any> | undefined;
+    var _lruCacheInstance: LRUCache<string, WeatherData> | undefined;
 }
 
-export const lruCache: LRUCache<string, any> =
-    global._lruCacheInstance || new LRUCache<string, any>(100);
+export const lruCache: LRUCache<string, WeatherData> =
+    global._lruCacheInstance || new LRUCache<string, WeatherData>(100);
 
 if (!global._lruCacheInstance) {
     global._lruCacheInstance = lruCache;

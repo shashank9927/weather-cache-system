@@ -1,22 +1,22 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import connectDB from '@/lib/db';
 import Weather from '@/models/Weather';
 
 
-export async function GET(request: NextRequest) {
+export async function GET() {
     try {
         await connectDB();
         const TTL_MS = 30 * 60 * 1000;
 
-        
+
         const weatherDocs = await Weather.find({}).sort({ lastFetched: -1 }).limit(50);
 
-        
+
         const formattedEntries = weatherDocs.map((doc) => ({
             city: doc.city,
             lastFetched: doc.lastFetched.toISOString(),
             status: Date.now() - doc.lastFetched.getTime() < TTL_MS ? 'fresh' : 'expired',
-            age: Math.round((Date.now() - doc.lastFetched.getTime()) / 1000), 
+            age: Math.round((Date.now() - doc.lastFetched.getTime()) / 1000),
             coordinates: doc.data.coordinates,
         }));
 

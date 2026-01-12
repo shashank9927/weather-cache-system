@@ -153,7 +153,7 @@ export default function Home() {
 
             setWeatherData(data.data);
 
-            
+
             if (showViewer) fetchViewerData();
 
             if (time < 20) {
@@ -166,8 +166,8 @@ export default function Home() {
                 setCacheSource('API');
                 setCacheStatus(['miss', 'miss', 'hit']);
             }
-        } catch (err: any) {
-            setError(err.message);
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : 'An error occurred');
             setCacheStatus(['miss', 'miss', 'miss']);
         } finally {
             setLoading(false);

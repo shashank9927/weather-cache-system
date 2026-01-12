@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { GeocodingResult } from '@/lib/types';
 
 export async function GET(request: NextRequest) {
     try {
@@ -12,7 +13,7 @@ export async function GET(request: NextRequest) {
             );
         }
 
-  
+
         const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(
             query
         )}&count=5&language=en&format=json`;
@@ -28,7 +29,7 @@ export async function GET(request: NextRequest) {
         }
 
 
-        const suggestions = data.results.map((result: any) => ({
+        const suggestions = data.results.map((result: GeocodingResult) => ({
             name: result.name,
             fullName: `${result.name}${result.admin1 ? ', ' + result.admin1 : ''}${result.country ? ', ' + result.country : ''}`,
             lat: result.latitude,
