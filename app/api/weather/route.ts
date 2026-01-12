@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
             );
         }
 
-        const weatherData = await getCityWeather(
+        const result = await getCityWeather(
             city,
             lat ? parseFloat(lat) : undefined,
             lon ? parseFloat(lon) : undefined
@@ -25,7 +25,8 @@ export async function GET(request: NextRequest) {
         return NextResponse.json(
             {
                 success: true,
-                data: weatherData,
+                data: result.data,
+                cacheSource: result.cacheSource,
             },
             { status: 200 }
         );

@@ -156,10 +156,12 @@ export default function Home() {
 
             if (showViewer) fetchViewerData();
 
-            if (time < 20) {
+            // Use explicit cache source from API response
+            const source = data.cacheSource;
+            if (source === 'l1') {
                 setCacheSource('L1 Cache');
                 setCacheStatus(['hit', 'idle', 'idle']);
-            } else if (time < 100) {
+            } else if (source === 'l2') {
                 setCacheSource('L2 Cache');
                 setCacheStatus(['miss', 'hit', 'idle']);
             } else {

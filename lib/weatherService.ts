@@ -106,7 +106,7 @@ async function fetchFromSource(city: string, lat?: number, lon?: number): Promis
     }
 }
 
-export async function getCityWeather(city: string, lat?: number, lon?: number): Promise<WeatherData> {
+export async function getCityWeather(city: string, lat?: number, lon?: number): Promise<{ data: WeatherData; cacheSource: 'l1' | 'l2' | 'api' }> {
     const normalizedCity = city.toLowerCase().trim();
     const now = Date.now();
 
@@ -115,7 +115,7 @@ export async function getCityWeather(city: string, lat?: number, lon?: number): 
     if (l1Result) {
         if (isFresh(l1Result.lastFetched)) {
             console.log(`L1 Cache Hit (Fresh): ${normalizedCity}`);
-            return l1Result.value;
+            return { data: l1Result.value, cacheSource: 'l1' };
         } else {
             console.log(`L1 Cache Hit (Expired): ${normalizedCity}`);
         }
@@ -132,7 +132,7 @@ export async function getCityWeather(city: string, lat?: number, lon?: number): 
         if (isFresh(l2LastFetched)) {
             console.log(`L2 Cache Hit (Fresh): ${normalizedCity}`);
             lruCache.set(normalizedCity, weatherDoc.data, l2LastFetched);
-            return weatherDoc.data;
+            return { data: weatherDoc.data, cacheSource: 'l2' };
         } else {
             console.log(`L2 Cache Hit (Expired): ${normalizedCity}`);
         }
@@ -156,5 +156,5 @@ export async function getCityWeather(city: string, lat?: number, lon?: number): 
     lruCache.set(normalizedCity, freshData, now);
     console.log(`Updated L1 Cache (LRU): ${normalizedCity}`);
 
-    return freshData;
+    return { data: freshData, cacheSource: 'api' };
 }
