@@ -196,7 +196,7 @@ export default function Home() {
         <div className="app">
             <section className="hero">
                 <h1>Weather Cache System</h1>
-                <p className="lead">Multi-level caching with LRU eviction and lazy expiration. Search any city worldwide.</p>
+                <p className="lead">Custom-built LRU cache (Doubly Linked List + HashMap) with MongoDB persistence and lazy expiration. Search any city worldwide.</p>
             </section>
 
             {error && <div className="error fade">{error}</div>}
