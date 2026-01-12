@@ -59,7 +59,23 @@ export default function Home() {
         setToast({ message, type });
         setTimeout(() => setToast(null), 3000);
     };
+    
+    useEffect(() => {
+    const clearDatabaseOnLoad = async () => {
+        try {
+            await fetch('/api/database/clear', { method: 'DELETE' });
+            console.log('MongoDB (L2 Cache) cleared on page reload/startup.');
+            
+            if (showViewer) {
+                setL2Entries([]); 
+            }
+        } catch (error) {
+            console.error('Failed to clear database on startup:', error);
+        }
+    };
 
+        clearDatabaseOnLoad();
+    }, []);
     // Debounced search
     useEffect(() => {
         if (debounceRef.current) clearTimeout(debounceRef.current);
