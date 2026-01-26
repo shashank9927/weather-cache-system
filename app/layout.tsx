@@ -7,6 +7,9 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
     title: 'custom-lru-cache-weather-api',
     description: 'Weather API showcasing custom LRU cache (Doubly Linked List + HashMap) with MongoDB fallback and lazy TTL expiration',
+    icons: {
+        icon: '/favicon.svg',
+    },
 };
 
 export default function RootLayout({
