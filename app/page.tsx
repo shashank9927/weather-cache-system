@@ -68,12 +68,10 @@ export default function Home() {
                     fetch('/api/database/clear', { method: 'DELETE' })
                 ]);
                 
-                console.log('System Reset: L1 and L2 caches cleared on startup.');
-                
                 setL1Entries([]);
                 setL2Entries([]);
             } catch (error) {
-                console.error('Failed to clear caches on startup:', error);
+                // Silent error handling on startup
             }
         };
     
@@ -189,8 +187,10 @@ export default function Home() {
                 setCacheStatus(['miss', 'miss', 'hit']);
             }
         } catch (err: unknown) {
-            setError(err instanceof Error ? err.message : 'An error occurred');
+            const errorMessage = err instanceof Error ? err.message : 'An error occurred';
+            setError(errorMessage);
             setCacheStatus(['miss', 'miss', 'miss']);
+            setResponseTime(Math.round(performance.now() - start));
         } finally {
             setLoading(false);
         }

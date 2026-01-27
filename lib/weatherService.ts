@@ -24,12 +24,14 @@ async function getCoordinates(city: string): Promise<WeatherCoordinates> {
             console.log(`Geocoded ${city}: ${result.latitude}, ${result.longitude}`);
             return { lat: result.latitude, lon: result.longitude };
         } else {
-            console.warn(`Geocoding failed for ${city}, using default coordinates (London)`);
-            return { lat: 51.5074, lon: -0.1278 };
+            throw new Error(`City not found: "${city}". Please check the spelling and try again.`);
         }
     } catch (error) {
+        if (error instanceof Error && error.message.includes('City not found')) {
+            throw error;
+        }
         console.error('Geocoding error:', error);
-        return { lat: 51.5074, lon: -0.1278 };
+        throw new Error('Failed to geocode city. Please try again.');
     }
 }
 
