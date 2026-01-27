@@ -16,8 +16,18 @@ export async function GET(request: NextRequest) {
             );
         }
 
+        // Sanitize city name - remove special characters that could cause issues
+        const sanitizedCity = city.replace(/[`@#$%^&*()+=\[\]{}|\\<>]/g, '').trim();
+        
+        if (!sanitizedCity || sanitizedCity.length < 2) {
+            return NextResponse.json(
+                { success: false, error: 'Please enter a valid city name (at least 2 characters).' },
+                { status: 400 }
+            );
+        }
+
         const result = await getCityWeather(
-            city,
+            sanitizedCity,
             lat ? parseFloat(lat) : undefined,
             lon ? parseFloat(lon) : undefined
         );
@@ -32,10 +42,23 @@ export async function GET(request: NextRequest) {
         );
     } catch (error) {
         console.error('API Error:', error);
+        const errorMessage = error instanceof Error ? error.message : 'Internal server error';
+        
+        // Return 404 for city not found errors
+        if (errorMessage.includes('City not found')) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    error: errorMessage,
+                },
+                { status: 404 }
+            );
+        }
+        
         return NextResponse.json(
             {
                 success: false,
-                error: error instanceof Error ? error.message : 'Internal server error',
+                error: errorMessage,
             },
             { status: 500 }
         );
