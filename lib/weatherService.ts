@@ -40,11 +40,10 @@ async function fetchFromSource(city: string, lat?: number, lon?: number): Promis
 
     let coords = { lat: lat || 0, lon: lon || 0 };
 
-    if (!lat || !lon) {
-        coords = await getCoordinates(city);
-    }
-
     try {
+        if (!lat || !lon) {
+            coords = await getCoordinates(city);
+        }
         const params = {
             latitude: coords.lat,
             longitude: coords.lon,
@@ -103,6 +102,10 @@ async function fetchFromSource(city: string, lat?: number, lon?: number): Promis
 
         return weatherData;
     } catch (error) {
+        // Preserve "City not found" errors
+        if (error instanceof Error && error.message.includes('City not found')) {
+            throw error;
+        }
         console.error('Error fetching from OpenMeteo:', error);
         throw new Error('Failed to fetch weather data from API');
     }
